@@ -8,6 +8,7 @@ class CSVManager:
         'verbs': config.VERBS_FILE_PATH,
         'nouns': config.NOUNS_FILE_PATH,
         'indeclinables': config.INDECLINABLES_FILE_PATH,
+        'pronouns': config.PRONOUNS_FILE_PATH,
     }
 
     def get_data_set(self, word_class):
@@ -32,11 +33,11 @@ class CSVManager:
         data_set = {}
 
         for row in raw_data:
-            pali_term, english_term = str(row[0]), row[1:]
+            pali_term, english_terms = str(row[0]), row[1:]
 
             if pali_term in data_set:
                 continue
 
-            data_set[pali_term] = english_term
+            data_set[pali_term] = english_terms
 
         return data_set

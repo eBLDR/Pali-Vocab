@@ -10,12 +10,14 @@ class Manager:
     word_class_verbs = 'verbs'
     word_class_nouns = 'nouns'
     word_class_indeclinables = 'indeclinables'
+    word_class_pronouns = 'pronouns'
 
     word_class_types = [
         word_class_all,
         word_class_verbs,
         word_class_nouns,
         word_class_indeclinables,
+        word_class_pronouns,
     ]
 
     def __init__(self):
@@ -28,6 +30,8 @@ class Manager:
         self.current_question = 1
         self.unasked_terms = []
         self.score = Score()
+
+        self.terms_to_review = []
 
     def run(self):
         self.intro()
@@ -46,9 +50,13 @@ class Manager:
 
         tools.clear_screen()
         tools.dash_line()
-        tools.press_enter_(text='Finished, see score...')
-
+        tools.press_enter_(text='Done, see score...')
         self.score.display()
+
+        if self.terms_to_review:
+            tools.dash_line()
+            tools.press_enter_(text='Incorrect answers for reviewing...')
+            self.show_terms_to_review()
 
     @staticmethod
     def intro():
@@ -110,6 +118,7 @@ class Manager:
         else:
             print(f'\nIncorrect. Possible translations: {correct_answers}\n')
             self.score.incorrect += 1
+            self.terms_to_review.append(original_term)
 
         self.score.total += 1
 
@@ -123,3 +132,8 @@ class Manager:
             return True
 
         return False
+
+    def show_terms_to_review(self):
+        print()
+        for term in self.terms_to_review:
+            print(f'{term} -> {", ".join(self.data_set[term])}')
