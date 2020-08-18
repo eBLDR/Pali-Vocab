@@ -101,7 +101,7 @@ class Manager:
         print(original_term)
 
         while True:
-            answer = input('Trans.: ').lower()
+            answer = input('Trans.: ')
             if answer:
                 break
 
@@ -125,6 +125,10 @@ class Manager:
     @staticmethod
     def is_answer_valid(correct_answers, answer):
         if answer in correct_answers:
+            return True
+
+        # Asses terms without case sensitivity
+        if answer.lower() in [correct_answer.lower() for correct_answer in correct_answers]:
             return True
 
         # Asses terms with dash (-)
