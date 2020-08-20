@@ -6,24 +6,29 @@ from palivocab.score import Score
 
 
 class Manager:
+
+    # Vocabulary from Pāli textbooks
+    sources = [
+        'silva',
+        'warder',
+    ]
+
+    # Word classes
     word_class_all = 'all'
-    word_class_verbs = 'verbs'
-    word_class_nouns = 'nouns'
-    word_class_indeclinables = 'indeclinables'
-    word_class_pronouns = 'pronouns'
 
     word_class_types = [
         word_class_all,
-        word_class_verbs,
-        word_class_nouns,
-        word_class_indeclinables,
-        word_class_pronouns,
+        'verbs',
+        'nouns',
+        'indeclinables',
+        'pronouns',
     ]
 
     def __init__(self):
         self.csv_manager = CSVManager()
 
-        self.mode = None
+        self.source = None
+        self.word_class = None
         self.data_set = {}
 
         self.total_questions = 0
@@ -36,11 +41,13 @@ class Manager:
     def run(self):
         self.intro()
 
+        self.init_source()
         self.init_mode()
         self.init_data_set()
         self.init_number_of_questions()
 
         tools.dash_line()
+        self.display_set_up()
         tools.press_enter_(text='Ready?')
 
         while self.current_question <= self.total_questions:
@@ -63,11 +70,19 @@ class Manager:
         tools.clear_screen()
         print(f'{config.PROJECT_NAME}\n')
 
-    def init_mode(self):
-        print(f'Modes: {self.word_class_types}')
-        while (mode := input('Mode: ').lower()) not in self.word_class_types:
+    def init_source(self):
+        print(f'Sources (textbook\'s author): '
+              f'{", ".join([source.title() for source in self.sources])}')
+        while (source := input('Source: ').lower()) not in self.sources:
             continue
-        self.mode = mode
+        self.source = source
+
+    def init_mode(self):
+        print(f'Word classes: '
+              f'{", ".join(self.word_class_types)}')
+        while (word_class := input('Word class: ').lower()) not in self.word_class_types:
+            continue
+        self.word_class = word_class
 
     def init_number_of_questions(self):
         max_ = len(self.unasked_terms)
@@ -81,17 +96,21 @@ class Manager:
         self.total_questions = questions
 
     def init_data_set(self):
-        if self.mode == self.word_class_all:
+        if self.word_class == self.word_class_all:
             for word_class in self.word_class_types:
                 if word_class != self.word_class_all:
                     self.data_set.update(
-                        self.csv_manager.get_data_set(word_class)
+                        self.csv_manager.get_data_set(self.source, word_class)
                     )
         else:
-            self.data_set = self.csv_manager.get_data_set(self.mode)
+            self.data_set = self.csv_manager.get_data_set(self.source, self.word_class)
 
         self.unasked_terms = list(self.data_set.keys())
         random.shuffle(self.unasked_terms)
+
+    def display_set_up(self):
+        print(f'Loaded {self.total_questions} questions of word class '
+              f'{self.word_class} from source {self.source.title()}')
 
     def ask_term(self):
         tools.clear_screen()

@@ -1,27 +1,39 @@
 import csv
+import os
 
 from palivocab import config
 
 
 class CSVManager:
-    type_mapper = {
-        'verbs': config.VERBS_FILE_PATH,
-        'nouns': config.NOUNS_FILE_PATH,
-        'indeclinables': config.INDECLINABLES_FILE_PATH,
-        'pronouns': config.PRONOUNS_FILE_PATH,
+    word_class_file_name_mapper = {
+        'verbs': config.VERBS_FILENAME,
+        'nouns': config.NOUNS_FILENAME,
+        'indeclinables': config.INDECLINABLES_FILENAME,
+        'pronouns': config.PRONOUNS_FILENAME,
     }
 
-    def get_data_set(self, word_class):
-        if word_class not in self.type_mapper.keys():
-            raise NotImplementedError
+    def get_data_set(self, source, word_class):
+        file_path = self.generate_file_path(source, word_class)
 
         return self.prepare_data_set(
-            self.load_csv(self.type_mapper[word_class]),
+            self.load_csv(file_path),
         )
 
+    def generate_file_path(self, source, word_class):
+        file_path = os.path.join(
+            config.SRC_PATH,
+            source.lower(),
+            self.word_class_file_name_mapper.get(word_class, ''),
+        )
+
+        if not os.path.isfile(file_path):
+            raise FileNotFoundError
+
+        return file_path
+
     @staticmethod
-    def load_csv(filename):
-        with open(filename, 'r') as csv_file:
+    def load_csv(filepath):
+        with open(filepath, 'r') as csv_file:
             raw_data = [
                 row for row in csv.reader(csv_file)
             ]
