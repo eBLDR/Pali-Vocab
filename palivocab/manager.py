@@ -6,7 +6,6 @@ from palivocab.score import Score
 
 
 class Manager:
-
     # Vocabulary from Pāli textbooks
     sources = [
         'silva',
@@ -41,10 +40,7 @@ class Manager:
     def run(self):
         self.intro()
 
-        self.init_source()
-        self.init_mode()
-        self.init_data_set()
-        self.init_number_of_questions()
+        self.set_up()
 
         tools.dash_line()
         self.display_set_up()
@@ -57,7 +53,7 @@ class Manager:
 
         tools.clear_screen()
         tools.dash_line()
-        tools.press_enter_(text='Done, see score...')
+        tools.press_enter_(text='Finished, see score...')
         self.score.display()
 
         if self.terms_to_review:
@@ -65,35 +61,42 @@ class Manager:
             tools.press_enter_(text='Incorrect answers for reviewing...')
             self.show_terms_to_review()
 
+        tools.dash_line()
+        tools.press_enter_(text='Done!')
+
     @staticmethod
     def intro():
         tools.clear_screen()
         print(f'{config.PROJECT_NAME}\n')
 
+    def set_up(self):
+        self.init_source()
+        self.init_mode()
+        self.init_data_set()
+        self.init_number_of_questions()
+
     def init_source(self):
         print(f'Sources (textbook\'s author): '
               f'{", ".join([source.title() for source in self.sources])}')
-        while (source := input('Source: ').lower()) not in self.sources:
-            continue
-        self.source = source
+
+        self.source = tools.get_user_input(
+            prompt='Source',
+            valid_options=self.sources,
+        )
 
     def init_mode(self):
-        print(f'Word classes: '
-              f'{", ".join(self.word_class_types)}')
-        while (word_class := input('Word class: ').lower()) not in self.word_class_types:
-            continue
-        self.word_class = word_class
+        print(f'Word classes: {", ".join(self.word_class_types)}')
+
+        self.word_class = tools.get_user_input(
+            prompt='Word class',
+            valid_options=self.word_class_types,
+        )
 
     def init_number_of_questions(self):
-        max_ = len(self.unasked_terms)
-        while True:
-            questions = input(f'Number of questions (max. {max_}): ')
-            if questions.isdigit():
-                questions = int(questions)
-                if 0 < questions <= max_:
-                    break
-
-        self.total_questions = questions
+        self.total_questions = tools.get_user_input_integer(
+            prompt='Number of questions',
+            max_value=len(self.unasked_terms),
+        )
 
     def init_data_set(self):
         if self.word_class == self.word_class_all:
@@ -119,10 +122,7 @@ class Manager:
         original_term = self.unasked_terms[0]
         print(original_term)
 
-        while True:
-            answer = input('Trans.: ')
-            if answer:
-                break
+        answer = tools.get_user_input(prompt='Trans.')
 
         self.assess_answer(original_term, answer)
         self.unasked_terms.remove(original_term)
