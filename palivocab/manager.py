@@ -49,7 +49,6 @@ class Manager:
         while self.unasked_terms:
             self.ask_term()
             self.current_question += 1
-            tools.press_enter_()
 
         tools.clear_screen()
         tools.dash_line()
@@ -134,12 +133,13 @@ class Manager:
         is_answer_valid = self.is_answer_valid(correct_answers, answer)
 
         if is_answer_valid:
-            print('\nCorrect!\n')
+            # print('\nCorrect!\n')
             self.score.correct += 1
         else:
             print(f'\nIncorrect. Possible translations: {correct_answers}\n')
             self.score.incorrect += 1
             self.terms_to_review.append(original_term)
+            tools.press_enter_(text='Next...')
 
         self.score.total += 1
 

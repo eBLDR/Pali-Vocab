@@ -9,7 +9,7 @@ def dash_line(length=15):
     print('= ' * length)
 
 
-def press_enter_(text='Next...'):
+def press_enter_(text):
     input(f'{text} | Press <enter> ')
 
 
