@@ -46,7 +46,7 @@ class Manager:
         self.display_set_up()
         tools.press_enter_(text='Ready?')
 
-        while self.current_question <= self.total_questions:
+        while self.unasked_terms:
             self.ask_term()
             self.current_question += 1
             tools.press_enter_()
@@ -72,8 +72,8 @@ class Manager:
     def set_up(self):
         self.init_source()
         self.init_mode()
-        self.init_data_set()
-        self.init_number_of_questions()
+        self.load_data_set()
+        self.init_questions()
 
     def init_source(self):
         print(f'Sources (textbook\'s author): '
@@ -92,13 +92,7 @@ class Manager:
             valid_options=self.word_class_types,
         )
 
-    def init_number_of_questions(self):
-        self.total_questions = tools.get_user_input_integer(
-            prompt='Number of questions',
-            max_value=len(self.unasked_terms),
-        )
-
-    def init_data_set(self):
+    def load_data_set(self):
         if self.word_class == self.word_class_all:
             for word_class in self.word_class_types:
                 if word_class != self.word_class_all:
@@ -108,8 +102,16 @@ class Manager:
         else:
             self.data_set = self.csv_manager.get_data_set(self.source, self.word_class)
 
-        self.unasked_terms = list(self.data_set.keys())
-        random.shuffle(self.unasked_terms)
+    def init_questions(self):
+        original_terms = list(self.data_set.keys())
+        random.shuffle(original_terms)
+
+        self.total_questions = tools.get_user_input_integer(
+            prompt='Number of questions',
+            max_value=len(original_terms),
+        )
+
+        self.unasked_terms = original_terms[:self.total_questions]
 
     def display_set_up(self):
         print(f'Loaded {self.total_questions} questions of word class '
