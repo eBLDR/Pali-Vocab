@@ -20,7 +20,7 @@ def get_user_input(prompt, valid_options=None):
         ]
 
     while True:
-        user_input = input(f'{prompt}: ').lower()
+        user_input = input(f'{prompt}: ').strip(' ').lower()
 
         if valid_options and user_input not in valid_options:
             continue
