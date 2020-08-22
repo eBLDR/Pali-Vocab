@@ -56,7 +56,7 @@ class Manager:
         tools.clear_screen()
         print(
             f'{config.PROJECT_NAME}\n\nNotes (unless otherwise specified):\n'
-            '\t- Verbs are given in the 3r person singular form\n'
+            '\t- Verbs are given in the 3r person singular form of the present tense\n'
             '\t- Nouns are given in the stem form, translated as the '
             'nominative case 1st person singular form\n'
         )
@@ -79,28 +79,28 @@ class Manager:
             valid_options=available_sources,
         )
 
+    def init_lesson(self):
+        available_lessons = sorted(self.csv_manager.get_available_lessons(self.source))
+        print(f'Lessons [all]: {", ".join(available_lessons)}')
+
+        # TODO: implement multiple lesson selection
+        # print(f'Lessons (comma separated) [all]: {", ".join(available_lessons)}')
+
+        self.lesson_number = tools.get_user_input(
+            prompt='Lesson',
+            valid_options=available_lessons + [config.ALL_STRING],
+        )
+
     def init_word_class(self):
-        available_word_classes = self.csv_manager.get_available_word_classes(
+        available_word_classes = sorted(self.csv_manager.get_available_word_classes(
             self.source,
             lesson_number=self.lesson_number,
-        )
+        ))
         print(f'Word classes [all]: {", ".join(available_word_classes)}')
 
         self.word_class = tools.get_user_input(
             prompt='Word class',
             valid_options=available_word_classes + [config.ALL_STRING],
-        )
-
-    def init_lesson(self):
-        available_lessons = self.csv_manager.get_available_lessons(self.source)
-        print(f'Lessons: {", ".join(available_lessons)}')
-
-        # TODO: implement multiple lesson selection & `all` selection
-        # print(f'Lessons (comma separated) [all]: {", ".join(available_lessons)}')
-
-        self.lesson_number = tools.get_user_input(
-            prompt='Lesson',
-            valid_options=available_lessons,  # + [config.ALL_STRING],
         )
 
     def load_data(self):

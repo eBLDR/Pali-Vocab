@@ -5,19 +5,13 @@ from palivocab import config
 
 
 class CSVManager:
-    word_class_file_name_mapper = {
-        'verbs': config.VERBS_FILENAME,
-        'nouns': config.NOUNS_FILENAME,
-        'indeclinables': config.INDECLINABLES_FILENAME,
-        'pronouns': config.PRONOUNS_FILENAME,
-    }
 
     def generate_path(self, source=None, lesson_number=None, word_class=None):
         path = os.path.join(
             config.SRC_PATH,
             source.lower() if source else '',
             self.generate_lesson_folder_name(lesson_number) if lesson_number else '',
-            self.word_class_file_name_mapper.get(word_class, '') if word_class else '',
+            self.generate_word_class_file_name(word_class) if word_class else '',
         )
 
         if not os.path.exists(path):
@@ -42,14 +36,30 @@ class CSVManager:
         ]
 
     def get_available_word_classes(self, source, lesson_number):
-        return [
-            file.replace('.csv', '') for file in os.listdir(
-                self.generate_path(
-                    source,
-                    lesson_number=lesson_number,
-                ),
+        def get_available_word_classes_(source_, lesson_number__):
+            return [
+                file.replace(config.CSV_EXTENSION, '') for file in os.listdir(
+                    self.generate_path(
+                        source_,
+                        lesson_number=lesson_number__,
+                    ),
+                )
+            ]
+
+        word_classes = set()
+
+        if lesson_number == config.ALL_STRING:
+            for lesson_number_ in self.get_available_lessons(source):
+                word_classes.update(
+                    get_available_word_classes_(source, lesson_number_)
+                )
+
+        else:
+            word_classes.update(
+                get_available_word_classes_(source, lesson_number)
             )
-        ]
+
+        return word_classes
 
     def generate_data_set(self, source, lesson_number=None, word_class=None):
         data_set = {}
@@ -63,6 +73,7 @@ class CSVManager:
                         word_class=word_class,
                     )
                 )
+
         else:
             data_set = self.load_lesson(
                 source,
@@ -87,6 +98,7 @@ class CSVManager:
                         word_class=word_class_,
                     )
                 )
+
         else:
             lesson_data = self.load_word_class(
                 source,
@@ -140,3 +152,7 @@ class CSVManager:
         return config.LESSON_FOLDER_NAME.format(
             two_digit_number=lesson_string,
         )
+
+    @staticmethod
+    def generate_word_class_file_name(word_class: str) -> str:
+        return word_class + config.CSV_EXTENSION
