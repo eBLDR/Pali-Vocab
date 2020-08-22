@@ -6,28 +6,16 @@ from palivocab.score import Score
 
 
 class Manager:
-    # Vocabulary from Pāli textbooks
-    sources = [
-        'silva',
-        'warder',
-    ]
-
-    # Word classes
-    word_class_all = 'all'
-
-    word_class_types = [
-        word_class_all,
-        'verbs',
-        'nouns',
-        'indeclinables',
-        'pronouns',
-    ]
+    """
+    Vocabulary from Pāli textbooks
+    """
 
     def __init__(self):
         self.csv_manager = CSVManager()
 
         self.source = None
         self.word_class = None
+        self.lesson_number = None
         self.data_set = {}
 
         self.total_questions = 0
@@ -70,36 +58,51 @@ class Manager:
 
     def set_up(self):
         self.init_source()
-        self.init_mode()
-        self.load_data_set()
+        self.init_lesson()
+        self.init_word_class()
+        self.load_data()
         self.init_questions()
 
     def init_source(self):
+        available_sources = sorted(self.csv_manager.get_available_sources())
         print(f'Sources (textbook\'s author): '
-              f'{", ".join([source.title() for source in self.sources])}')
+              f'{", ".join([source.title() for source in available_sources])}')
 
         self.source = tools.get_user_input(
             prompt='Source',
-            valid_options=self.sources,
+            valid_options=available_sources,
         )
 
-    def init_mode(self):
-        print(f'Word classes: {", ".join(self.word_class_types)}')
+    def init_word_class(self):
+        available_word_classes = self.csv_manager.get_available_word_classes(
+            self.source,
+            lesson_number=self.lesson_number,
+        )
+        print(f'Word classes [all]: {", ".join(available_word_classes)}')
 
         self.word_class = tools.get_user_input(
             prompt='Word class',
-            valid_options=self.word_class_types,
+            valid_options=available_word_classes + [config.ALL_STRING],
         )
 
-    def load_data_set(self):
-        if self.word_class == self.word_class_all:
-            for word_class in self.word_class_types:
-                if word_class != self.word_class_all:
-                    self.data_set.update(
-                        self.csv_manager.get_data_set(self.source, word_class)
-                    )
-        else:
-            self.data_set = self.csv_manager.get_data_set(self.source, self.word_class)
+    def init_lesson(self):
+        available_lessons = self.csv_manager.get_available_lessons(self.source)
+        print(f'Lessons: {", ".join(available_lessons)}')
+
+        # TODO: implement multiple lesson selection & `all` selection
+        # print(f'Lessons (comma separated) [all]: {", ".join(available_lessons)}')
+
+        self.lesson_number = tools.get_user_input(
+            prompt='Lesson',
+            valid_options=available_lessons,  # + [config.ALL_STRING],
+        )
+
+    def load_data(self):
+        self.data_set = self.csv_manager.generate_data_set(
+            self.source,
+            lesson_number=self.lesson_number,
+            word_class=self.word_class,
+        )
 
     def init_questions(self):
         original_terms = list(self.data_set.keys())
