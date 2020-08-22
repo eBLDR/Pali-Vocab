@@ -54,8 +54,12 @@ class Manager:
     @staticmethod
     def intro():
         tools.clear_screen()
-        print(f'{config.PROJECT_NAME}\n')
-        print('Note: unless specified, verbs are in the third person singular form\n')
+        print(
+            f'{config.PROJECT_NAME}\n\nNotes (unless otherwise specified):\n'
+            '\t- Verbs are given in the 3r person singular form\n'
+            '\t- Nouns are given in the stem form, translated as the '
+            'nominative case 1st person singular form\n'
+        )
         tools.dash_line()
 
     def set_up(self):
