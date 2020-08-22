@@ -33,6 +33,10 @@ def get_user_input_integer(prompt, max_value=None):
     while True:
         user_input = input(f'{prompt} (max. {max_value}): ')
 
+        # Blank for max
+        if not user_input:
+            return max_value
+
         if not user_input.isdigit():
             continue
 

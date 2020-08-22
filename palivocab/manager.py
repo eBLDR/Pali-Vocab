@@ -55,6 +55,8 @@ class Manager:
     def intro():
         tools.clear_screen()
         print(f'{config.PROJECT_NAME}\n')
+        print('Note: unless specified, verbs are in the third person singular form\n')
+        tools.dash_line()
 
     def set_up(self):
         self.init_source()
@@ -109,15 +111,20 @@ class Manager:
         random.shuffle(original_terms)
 
         self.total_questions = tools.get_user_input_integer(
-            prompt='Number of questions',
+            prompt='Number of questions [blank for max]',
             max_value=len(original_terms),
         )
 
         self.unasked_terms = original_terms[:self.total_questions]
 
     def display_set_up(self):
-        print(f'Loaded {self.total_questions} questions of word class '
-              f'{self.word_class} from source {self.source.title()}')
+        print(
+            f'Loaded.\n'
+            f'Source: {self.source.title()}\n'
+            f'Lesson: {self.lesson_number}\n'
+            f'Word class: {self.word_class}\n'
+            f'Questions: {self.total_questions}'
+        )
 
     def ask_term(self):
         tools.clear_screen()
