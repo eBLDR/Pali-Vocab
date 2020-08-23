@@ -1,30 +1,29 @@
 import random
 
 from palivocab import config, utils
-from palivocab.data_manager import DataManager
-from palivocab.helpers.score import Score
 from palivocab.helpers.word_set import WordSet
+from palivocab.modes.base import ModeBase
 
 
-class ModeVocabulary:
+class ModeVocabulary(ModeBase):
     """
     Vocabulary from Pāli textbooks
     """
 
     def __init__(self):
-        self.csv_manager = DataManager()
+        super().__init__()
 
         self.source = None
         self.word_class = None
         self.lesson_number = None
+
         self.word_set = WordSet()
 
         self.total_questions = 0
         self.current_question = 1
-        self.unasked_terms = []
-        self.score = Score()
+        self.unasked_words = []
 
-        self.terms_to_review = []
+        self.words_to_review = []
 
     def run(self):
         self.set_up()
@@ -33,7 +32,7 @@ class ModeVocabulary:
         self.display_set_up()
         utils.press_enter_(text='Ready?')
 
-        while self.unasked_terms:
+        while self.unasked_words:
             self.ask_term()
             self.current_question += 1
 
@@ -42,7 +41,7 @@ class ModeVocabulary:
         utils.press_enter_(text='Finished, see score...')
         self.score.display()
 
-        if self.terms_to_review:
+        if self.words_to_review:
             utils.dash_line()
             utils.press_enter_(text='Incorrect answers for reviewing...')
             self.show_terms_to_review()
@@ -63,10 +62,7 @@ class ModeVocabulary:
         self.source = utils.get_user_input(
             prompt='Source',
             valid_options=available_sources,
-            info=(
-                f'Sources (textbook\'s author): '
-                f'{", ".join([source.title() for source in available_sources])}'
-            )
+            info=f'Sources (textbook\'s author)',
         )
 
     def init_lesson(self):
@@ -78,7 +74,7 @@ class ModeVocabulary:
         self.lesson_number = utils.get_user_input(
             prompt='Lesson',
             valid_options=available_lessons + [config.ALL_STRING],
-            info=f'Lessons [all]: {", ".join(available_lessons)}'
+            info=f'Lessons [all]',
         )
 
     def init_word_class(self):
@@ -90,7 +86,7 @@ class ModeVocabulary:
         self.word_class = utils.get_user_input(
             prompt='Word class',
             valid_options=available_word_classes + [config.ALL_STRING],
-            info=f'Word classes [all]: {", ".join(available_word_classes)}'
+            info=f'Word classes [all]',
         )
 
     def load_data(self):
@@ -101,15 +97,14 @@ class ModeVocabulary:
         ))
 
     def init_questions(self):
-        original_terms = self.word_set.get_list_of_original_terms()
-        random.shuffle(original_terms)
+        random.shuffle(self.word_set.words)
 
         self.total_questions = utils.get_user_input_integer(
             prompt='Number of questions [blank for max]',
-            max_value=len(original_terms),
+            max_value=len(self.word_set.words),
         )
 
-        self.unasked_terms = original_terms[:self.total_questions]
+        self.unasked_words = self.word_set.words[:self.total_questions]
 
     def display_set_up(self):
         print(
@@ -123,46 +118,38 @@ class ModeVocabulary:
     def ask_term(self):
         utils.clear_screen()
         utils.dash_line()
-        print(f'Question {self.current_question} of {self.total_questions}\n')
-        original_term = self.unasked_terms[0]
-        print(original_term)
+        word = self.unasked_words[0]
 
-        answer = utils.get_user_input(prompt='Trans.')
+        answer = utils.get_user_input(
+            prompt='Trans.',
+            info=(
+                f'Question {self.current_question} of {self.total_questions}'
+                f'\n\n{word.original}'
+            )
+        )
 
-        self.assess_answer(original_term, answer)
-        self.unasked_terms.remove(original_term)
+        self.assess_answer(word, answer)
+        self.unasked_words.remove(word)
 
-    def assess_answer(self, original_term, answer):
-        correct_answers = self.word_set.get_translations(original_term)
-        is_answer_valid = self.is_answer_valid(answer, correct_answers)
+    def assess_answer(self, word, answer):
+        is_answer_valid = self.is_answer_valid(
+            answer,
+            word.translations,
+        )
 
         if is_answer_valid:
             # print('\nCorrect!\n')
-            self.score.correct += 1
+            self.score.add_correct()
+
         else:
-            print(f'\nIncorrect. Possible translations: {correct_answers}\n')
-            self.score.incorrect += 1
-            self.terms_to_review.append(original_term)
+            print(f'\nIncorrect. Possible answers: {word.translations}\n')
+            self.score.add_incorrect()
+            self.words_to_review.append(word)
             utils.press_enter_(text='Next...')
 
         self.score.total += 1
 
-    @staticmethod
-    def is_answer_valid(answer, correct_answers):
-        if answer in correct_answers:
-            return True
-
-        # Asses terms without case sensitivity
-        if answer.lower() in [correct_answer.lower() for correct_answer in correct_answers]:
-            return True
-
-        # Asses terms with dash (-)
-        if answer.replace(' ', '-') in correct_answers:
-            return True
-
-        return False
-
     def show_terms_to_review(self):
         print()
-        for term in self.terms_to_review:
-            print(f'{term} -> {", ".join(self.word_set.get_translations(term))}')
+        for word in self.words_to_review:
+            print(f'{word.original} -> {", ".join(word.translations)}')

@@ -4,6 +4,12 @@ class Score:
         self.correct = 0
         self.incorrect = 0
 
+    def add_correct(self):
+        self.correct += 1
+
+    def add_incorrect(self):
+        self.incorrect += 1
+
     def display(self):
         print(
             f'Correct: {self.correct}/{self.total} ({round(self.correct / self.total * 100, 2)}%)\n'
