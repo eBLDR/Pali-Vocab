@@ -5,19 +5,22 @@ def clear_screen():
     os.system('clear')
 
 
-def dash_line(length=15):
+def dash_line(length: int = 15):
     print('= ' * length)
 
 
-def press_enter_(text):
+def press_enter_(text: str):
     input(f'{text} | Press <enter> ')
 
 
-def get_user_input(prompt, valid_options=None):
+def get_user_input(prompt: str, valid_options: list = None, info: str = None):
     if valid_options:
         valid_options = [
             valid_option.lower() for valid_option in valid_options
         ]
+
+    if info:
+        print(info)
 
     while True:
         user_input = input(f'{prompt}: ').strip(' ').lower()
@@ -29,7 +32,7 @@ def get_user_input(prompt, valid_options=None):
             return user_input
 
 
-def get_user_input_integer(prompt, max_value=None):
+def get_user_input_integer(prompt: str, max_value: int = None):
     while True:
         user_input = input(f'{prompt} (max. {max_value}): ')
 

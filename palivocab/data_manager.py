@@ -2,9 +2,10 @@ import csv
 import os
 
 from palivocab import config
+from palivocab.helpers.word import Word
 
 
-class CSVManager:
+class DataManager:
 
     def generate_path(self, source=None, lesson_number=None, word_class=None):
         path = os.path.join(
@@ -61,12 +62,14 @@ class CSVManager:
 
         return word_classes
 
-    def generate_data_set(self, source, lesson_number=None, word_class=None):
-        data_set = {}
+    def generate_words_list(self, source, lesson_number=None, word_class=None):
+        words = []
+
+        available_lesson_numbers = self.get_available_lessons(source)
 
         if lesson_number == config.ALL_STRING:
-            for lesson_number_ in self.get_available_lessons(source):
-                data_set.update(
+            for lesson_number_ in available_lesson_numbers:
+                words.extend(
                     self.load_lesson(
                         source,
                         lesson_number=lesson_number_,
@@ -74,24 +77,28 @@ class CSVManager:
                     )
                 )
 
-        else:
-            data_set = self.load_lesson(
-                source,
-                lesson_number=lesson_number,
-                word_class=word_class,
-            )
-
-        return data_set
-
-    def load_lesson(self, source, lesson_number, word_class=None):
-        lesson_data = {}
-
-        if word_class == config.ALL_STRING:
-            for word_class_ in self.get_available_word_classes(
+        elif lesson_number in available_lesson_numbers:
+            words.extend(
+                self.load_lesson(
                     source,
                     lesson_number=lesson_number,
-            ):
-                lesson_data.update(
+                    word_class=word_class,
+                )
+            )
+
+        return words
+
+    def load_lesson(self, source, lesson_number, word_class=None):
+        lesson_words = []
+
+        available_word_classes = self.get_available_word_classes(
+            source,
+            lesson_number=lesson_number,
+        )
+
+        if word_class == config.ALL_STRING:
+            for word_class_ in available_word_classes:
+                lesson_words.extend(
                     self.load_word_class(
                         source,
                         lesson_number=lesson_number,
@@ -99,14 +106,14 @@ class CSVManager:
                     )
                 )
 
-        else:
-            lesson_data = self.load_word_class(
+        elif word_class in available_word_classes:
+            lesson_words = self.load_word_class(
                 source,
                 lesson_number=lesson_number,
                 word_class=word_class,
             )
 
-        return lesson_data
+        return lesson_words
 
     def load_word_class(self, source, lesson_number=None, word_class=None):
         file_path = self.generate_path(
@@ -130,17 +137,22 @@ class CSVManager:
 
     @staticmethod
     def prepare_data_set(raw_data):
-        data_set = {}
+        words = []
 
         for row in raw_data:
-            pali_term, english_terms = str(row[0]), row[1:]
+            original_term, translations = str(row[0]), row[1:]
 
-            if pali_term in data_set:
+            if original_term in words:
                 continue
 
-            data_set[pali_term] = english_terms
+            words.append(
+                Word(
+                    original=original_term,
+                    translations=translations,
+                )
+            )
 
-        return data_set
+        return words
 
     @staticmethod
     def generate_lesson_folder_name(lesson_number: int) -> str:
