@@ -74,7 +74,7 @@ class ModeVocabulary(ModeBase):
         self.lesson_number = utils.get_user_input(
             prompt='Lesson',
             valid_options=available_lessons + [config.ALL_STRING],
-            info=f'Lessons [all]',
+            info=f'Lessons',
         )
 
     def init_word_class(self):
@@ -86,7 +86,7 @@ class ModeVocabulary(ModeBase):
         self.word_class = utils.get_user_input(
             prompt='Word class',
             valid_options=available_word_classes + [config.ALL_STRING],
-            info=f'Word classes [all]',
+            info=f'Word classes',
         )
 
     def load_data(self):

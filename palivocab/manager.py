@@ -39,6 +39,7 @@ class Manager:
             prompt='Mode',
             valid_options=available_modes,
             info=f'Available modes',
+            accept_shortcuts=True,
         )
 
         self.mode = self.modes_mapper.get(selected_mode)()

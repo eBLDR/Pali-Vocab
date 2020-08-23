@@ -22,22 +22,21 @@ def get_user_input(prompt: str, valid_options: list = None, info: str = '', acce
         ]
 
         if accept_shortcuts:
-            shortcut_mapper = generate_shortcut_mapper(valid_options)
+            shortcut_mapper, characters = generate_shortcut_mapper(valid_options)
+
+            info_valid_options = [
+                f"[{option[:characters].upper()}]{option[characters:]}" for option in valid_options
+            ]
+
             valid_options.extend(list(shortcut_mapper.keys()))
 
-    if valid_options:
+        else:
+            info_valid_options = valid_options
+
         if info:
             info += ": "
 
-        if shortcut_mapper:
-            characters = len(list(shortcut_mapper.values())[0])
-            info_valid_options = ", ".join(
-                [f"[{option[:characters].upper()}]{option[characters:]}" for option in valid_options]
-            )
-        else:
-            info_valid_options = ", ".join(valid_options)
-
-        info += info_valid_options
+        info += ", ".join(sorted(info_valid_options))
 
     if info:
         print(info)
@@ -76,17 +75,11 @@ def get_user_input_integer(prompt: str, max_value: int = None):
         return user_input
 
 
-def generate_shortened_input_options(options):
-    return [
-        option[0] for option in options
-    ]
-
-
 def generate_shortcut_mapper(terms):
     shortcut_mapper = {}
+    characters = 1
 
     while not shortcut_mapper:
-        characters = 1
 
         for term in terms:
             shortcut = term[:characters]
@@ -96,4 +89,4 @@ def generate_shortcut_mapper(terms):
             characters += 1
             shortcut_mapper.clear()
 
-    return shortcut_mapper
+    return shortcut_mapper, characters
