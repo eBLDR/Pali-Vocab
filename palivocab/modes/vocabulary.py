@@ -69,12 +69,13 @@ class ModeVocabulary(ModeBase):
         available_lessons = sorted(self.csv_manager.get_available_lessons(self.source))
 
         # TODO: implement multiple lesson selection
-        # print(f'Lessons (comma separated) [all]: {", ".join(available_lessons)}')
+        # print(f'Lessons (comma separated): {", ".join(available_lessons)}')
 
         self.lesson_number = utils.get_user_input(
             prompt='Lesson',
-            valid_options=available_lessons + [config.ALL_STRING],
+            valid_options=available_lessons,
             info=f'Lessons',
+            accept_option_all=True,
         )
 
     def init_word_class(self):
@@ -85,8 +86,9 @@ class ModeVocabulary(ModeBase):
 
         self.word_class = utils.get_user_input(
             prompt='Word class',
-            valid_options=available_word_classes + [config.ALL_STRING],
+            valid_options=available_word_classes,
             info=f'Word classes',
+            accept_option_all=True,
         )
 
     def load_data(self):

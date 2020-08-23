@@ -1,5 +1,7 @@
 import os
 
+from palivocab import config
+
 
 def clear_screen():
     os.system('clear')
@@ -13,7 +15,10 @@ def press_enter_(text: str):
     input(f'{text} | Press <enter> ')
 
 
-def get_user_input(prompt: str, valid_options: list = None, info: str = '', accept_shortcuts=False):
+def get_user_input(
+        prompt: str, valid_options: list = None, info: str = '',
+        accept_option_all=False, accept_shortcuts=False,
+):
     shortcut_mapper = {}
 
     if valid_options:
@@ -36,7 +41,10 @@ def get_user_input(prompt: str, valid_options: list = None, info: str = '', acce
         if info:
             info += ": "
 
-        info += ", ".join(sorted(info_valid_options))
+        info += (f'[{config.ALL_STRING}] ' if accept_option_all else '') + ", ".join(sorted(info_valid_options))
+
+        if accept_option_all:
+            valid_options.append(config.ALL_STRING)
 
     if info:
         print(info)

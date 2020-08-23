@@ -5,8 +5,8 @@ from palivocab.modes.vocabulary import ModeVocabulary
 
 class Manager:
     modes_mapper = {
-        'vocabulary': ModeVocabulary,
-        'inflections': ModeInflections,
+        'vocabulary': ModeVocabulary(),
+        'inflections': ModeInflections(),
     }
 
     def __init__(self):
@@ -35,12 +35,11 @@ class Manager:
 
     def init_mode(self):
         available_modes = list(self.modes_mapper.keys())
-        selected_mode = utils.get_user_input(
-            prompt='Mode',
-            valid_options=available_modes,
-            info=f'Available modes',
-            accept_shortcuts=True,
+        self.mode = self.modes_mapper.get(
+            utils.get_user_input(
+                prompt='Mode',
+                valid_options=available_modes,
+                info=f'Available modes',
+                accept_shortcuts=True,
+            )
         )
-
-        self.mode = self.modes_mapper.get(selected_mode)()
-
