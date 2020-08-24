@@ -99,14 +99,14 @@ class ModeVocabulary(ModeBase):
         ))
 
     def init_questions(self):
-        random.shuffle(self.word_set.words)
+        random.shuffle(self.word_set)
 
         self.total_questions = utils.get_user_input_integer(
             prompt='Number of questions [blank for max]',
-            max_value=len(self.word_set.words),
+            max_value=len(self.word_set),
         )
 
-        self.unasked_words = self.word_set.words[:self.total_questions]
+        self.unasked_words = self.word_set[:self.total_questions]
 
     def display_set_up(self):
         print(
@@ -141,15 +141,13 @@ class ModeVocabulary(ModeBase):
 
         if is_answer_valid:
             # print('\nCorrect!\n')
-            self.score.add_correct()
+            self.score.increase_correct()
 
         else:
             print(f'\nIncorrect. Possible answers: {word.translations}\n')
-            self.score.add_incorrect()
+            self.score.increase_incorrect()
             self.words_to_review.append(word)
             utils.press_enter_(text='Next...')
-
-        self.score.total += 1
 
     def show_terms_to_review(self):
         print()

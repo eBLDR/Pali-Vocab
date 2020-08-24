@@ -29,7 +29,7 @@ class Manager:
             '\t- Verbs are given in the 3r person singular form of the present tense\n'
             '\t- Nouns are given in the stem form, translated as the '
             'nominative case 1st person singular form\n'
-            '\t- Word class `others` include adverbs, prepositions, etc.'
+            '\t- Word class `others` includes adverbs, prepositions, etc.'
         )
         utils.dash_line()
 

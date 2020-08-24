@@ -1,6 +1,4 @@
-class WordSet:
-    def __init__(self):
-        self.words = []
+class WordSet(list):
 
     def add_words(self, words):
-        self.words.extend(words)
+        self.extend(words)

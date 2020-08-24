@@ -2,7 +2,7 @@ import csv
 import os
 
 from palivocab import config
-from palivocab.helpers.word import Word
+from palivocab.words.word import Word
 
 
 class DataManager:
@@ -124,6 +124,7 @@ class DataManager:
 
         return self.prepare_data_set(
             self.load_csv(file_path),
+            word_class=word_class,
         )
 
     @staticmethod
@@ -136,7 +137,7 @@ class DataManager:
         return raw_data
 
     @staticmethod
-    def prepare_data_set(raw_data):
+    def prepare_data_set(raw_data, word_class=None):
         words = []
 
         for row in raw_data:
@@ -146,7 +147,8 @@ class DataManager:
                 continue
 
             words.append(
-                Word(
+                Word.factory_from_word_class(
+                    word_class=word_class,
                     original=original_term,
                     translations=translations,
                 )

@@ -4,11 +4,13 @@ class Score:
         self.correct = 0
         self.incorrect = 0
 
-    def add_correct(self):
+    def increase_correct(self):
         self.correct += 1
+        self.total += 1
 
-    def add_incorrect(self):
+    def increase_incorrect(self):
         self.incorrect += 1
+        self.total += 1
 
     def display(self):
         print(
