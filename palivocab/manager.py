@@ -38,8 +38,8 @@ class Manager:
         self.mode = self.modes_mapper.get(
             utils.get_user_input(
                 prompt='Mode',
-                valid_options=available_modes,
                 info=f'Available modes',
+                valid_options=available_modes,
                 accept_shortcuts=True,
             )
         )

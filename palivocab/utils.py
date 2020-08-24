@@ -16,9 +16,44 @@ def press_enter_(text: str):
 
 
 def get_user_input(
-        prompt: str, valid_options: list = None, info: str = '',
+        prompt: str, info: str = '', valid_options: list = None,
         accept_option_all=False, accept_shortcuts=False,
 ):
+    def generate_info_string(
+            info_='', valid_options_=None,
+            accept_option_all_=False, shortcut_mapper_=None,
+    ):
+        if not valid_options_:
+            return info_
+
+        if info_:
+            info_ += ": "
+
+        exclude_items = []
+
+        if accept_option_all_:
+            exclude_items.append(config.ALL_STRING)
+
+        if shortcut_mapper_:
+            exclude_items.extend(list(shortcut_mapper_.keys()))
+
+        valid_options_to_display = [
+            option_ for option_ in valid_options_ if option_ not in exclude_items
+        ]
+
+        if shortcut_mapper_:
+            shortcut_characters = len(exclude_items[-1])
+            valid_options_to_display = [
+                f"[{option_[:shortcut_characters].upper()}]{option_[shortcut_characters:]}" for option_ in valid_options_to_display
+            ]
+
+        if accept_option_all_:
+            info_ += f'[{config.ALL_STRING}] '
+
+        info_ += ", ".join(sorted(valid_options_to_display))
+
+        return info_
+
     shortcut_mapper = {}
 
     if valid_options:
@@ -27,26 +62,18 @@ def get_user_input(
         ]
 
         if accept_shortcuts:
-            shortcut_mapper, characters = generate_shortcut_mapper(valid_options)
-
-            info_valid_options = [
-                f"[{option[:characters].upper()}]{option[characters:]}" for option in valid_options
-            ]
-
+            shortcut_mapper = generate_shortcut_mapper(valid_options)
             valid_options.extend(list(shortcut_mapper.keys()))
-
-        else:
-            info_valid_options = valid_options
-
-        if info:
-            info += ": "
-
-        info += (f'[{config.ALL_STRING}] ' if accept_option_all else '') + ", ".join(sorted(info_valid_options))
 
         if accept_option_all:
             valid_options.append(config.ALL_STRING)
 
-    if info:
+    if info := generate_info_string(
+            info,
+            valid_options_=valid_options,
+            accept_option_all_=accept_option_all,
+            shortcut_mapper_=shortcut_mapper,
+    ):
         print(info)
 
     while True:
@@ -97,4 +124,4 @@ def generate_shortcut_mapper(terms):
             characters += 1
             shortcut_mapper.clear()
 
-    return shortcut_mapper, characters
+    return shortcut_mapper

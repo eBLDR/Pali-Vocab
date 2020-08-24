@@ -61,8 +61,9 @@ class ModeVocabulary(ModeBase):
 
         self.source = utils.get_user_input(
             prompt='Source',
-            valid_options=available_sources,
             info=f'Sources (textbook\'s author)',
+            valid_options=available_sources,
+            accept_shortcuts=True,
         )
 
     def init_lesson(self):
@@ -73,8 +74,8 @@ class ModeVocabulary(ModeBase):
 
         self.lesson_number = utils.get_user_input(
             prompt='Lesson',
-            valid_options=available_lessons,
             info=f'Lessons',
+            valid_options=available_lessons,
             accept_option_all=True,
         )
 
@@ -86,9 +87,10 @@ class ModeVocabulary(ModeBase):
 
         self.word_class = utils.get_user_input(
             prompt='Word class',
-            valid_options=available_word_classes,
             info=f'Word classes',
+            valid_options=available_word_classes,
             accept_option_all=True,
+            accept_shortcuts=True,
         )
 
     def load_data(self):
