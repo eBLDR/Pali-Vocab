@@ -20,10 +20,9 @@ def get_user_input(
         accept_option_all=False, accept_shortcuts=False,
 ):
     def generate_info_string(
-            info_='', valid_options_=None,
-            accept_option_all_=False, shortcut_mapper_=None,
+            info_='', shortcut_mapper_=None,
     ):
-        if not valid_options_:
+        if not valid_options:
             return info_
 
         if info_:
@@ -31,23 +30,24 @@ def get_user_input(
 
         exclude_items = []
 
-        if accept_option_all_:
+        if accept_option_all:
             exclude_items.append(config.ALL_STRING)
 
         if shortcut_mapper_:
             exclude_items.extend(list(shortcut_mapper_.keys()))
 
         valid_options_to_display = [
-            option_ for option_ in valid_options_ if option_ not in exclude_items
+            option for option in valid_options if option not in exclude_items
         ]
 
         if shortcut_mapper_:
             shortcut_characters = len(exclude_items[-1])
             valid_options_to_display = [
-                f"[{option_[:shortcut_characters].upper()}]{option_[shortcut_characters:]}" for option_ in valid_options_to_display
+                f"[{option_[:shortcut_characters].upper()}]{option_[shortcut_characters:]}"
+                for option_ in valid_options_to_display
             ]
 
-        if accept_option_all_:
+        if accept_option_all:
             info_ += f'[{config.ALL_STRING}] '
 
         info_ += ", ".join(sorted(valid_options_to_display))
@@ -70,8 +70,6 @@ def get_user_input(
 
     if info := generate_info_string(
             info,
-            valid_options_=valid_options,
-            accept_option_all_=accept_option_all,
             shortcut_mapper_=shortcut_mapper,
     ):
         print(info)
@@ -81,9 +79,10 @@ def get_user_input(
 
         if valid_options:
             # Check shortcuts
-            if option := shortcut_mapper.get(user_input):
-                return option
-
+            print(user_input)
+            if user_input := shortcut_mapper.get(user_input):
+                return user_input
+            print(user_input)
             if user_input not in valid_options:
                 continue
 
