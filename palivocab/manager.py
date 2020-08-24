@@ -1,4 +1,5 @@
-from palivocab import config, utils
+from palivocab import config
+from palivocab.helpers import utils
 from palivocab.modes.inflections import ModeInflections
 from palivocab.modes.vocabulary import ModeVocabulary
 

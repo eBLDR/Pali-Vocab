@@ -77,17 +77,12 @@ def get_user_input(
     while True:
         user_input = input(f'{prompt}: ').strip(' ').lower()
 
-        if valid_options:
-            # Check shortcuts
-            print(user_input)
-            if user_input := shortcut_mapper.get(user_input):
-                return user_input
-            print(user_input)
-            if user_input not in valid_options:
-                continue
+        if valid_options and user_input not in valid_options:
+            continue
 
         if user_input:
-            return user_input
+            # Check shortcuts
+            return shortcut_mapper.get(user_input) or user_input
 
 
 def get_user_input_integer(prompt: str, max_value: int = None):

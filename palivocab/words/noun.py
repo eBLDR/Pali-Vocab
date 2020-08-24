@@ -1,17 +1,9 @@
+from palivocab.words.inflections.declensions.declensions import Declensions
 from palivocab.words.word import Word
 
 
 class Noun(Word):
     word_class = 'noun'
-
-    _stems_type = [
-        '-a', '-ā',
-        '-i', '-ī', '-in',
-        '-u', '-ū',
-        '-r',
-        '-an', '-ant',
-        '-as', '-us',
-    ]
 
     _genders_type = [
         ('masculine', 'm.',),
@@ -23,6 +15,8 @@ class Noun(Word):
         super().__init__(original, translations)
 
         self.gender = None
+
+        self.declensions = Declensions(self.original, self.gender)
 
     def get_stem(self):
         pass

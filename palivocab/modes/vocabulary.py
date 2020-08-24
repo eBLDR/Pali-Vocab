@@ -1,6 +1,6 @@
 import random
 
-from palivocab import config, utils
+from palivocab.helpers import utils
 from palivocab.helpers.word_set import WordSet
 from palivocab.modes.base import ModeBase
 
