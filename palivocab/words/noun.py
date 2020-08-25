@@ -14,7 +14,7 @@ class Noun(Word):
     def __init__(self, original, translations, gender=None):
         super().__init__(original, translations)
 
-        self.gender = gender
+        self.gender = gender if gender in self._genders_type else None
 
         self.declensions = Declensions(
             self.original,

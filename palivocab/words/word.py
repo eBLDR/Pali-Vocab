@@ -6,11 +6,14 @@ class Word:
         self.translations = translations
 
     @classmethod
-    def factory_from_word_class(cls, word_class, original, translations):
+    def factory_from_word_class(cls, word_class, original, translations, gender):
         word_class = cls.clean_word_class(word_class)
 
         for subclass in cls.__subclasses__():
             if subclass.is_word_class_for(word_class):
+                if hasattr(subclass, 'gender'):
+                    return subclass(original, translations, gender=gender)
+
                 return subclass(original, translations)
 
         # raise ValueError(f'Word factory got unknown word class: {word_class}')
@@ -26,4 +29,3 @@ class Word:
             return
 
         return word_class.rstrip('s').lower()
-

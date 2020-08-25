@@ -7,6 +7,12 @@ from palivocab.words.word import Word
 
 class DataManager:
 
+    gender_mapper = {
+        'm': 'masculine',
+        'f': 'feminine',
+        'nt': 'neuter',
+    }
+
     def generate_path(self, source=None, lesson_number=None, word_class=None):
         path = os.path.join(
             config.SRC_PATH,
@@ -136,12 +142,15 @@ class DataManager:
 
         return raw_data
 
-    @staticmethod
-    def prepare_data_set(raw_data, word_class=None):
+    def prepare_data_set(self, raw_data, word_class=None):
         words = []
 
         for row in raw_data:
-            original_term, translations = str(row[0]), row[1:]
+            if word_class == 'noun':
+                original_term, translations, gender = str(row[0]), row[2:], self.gender_mapper.get(row[1])
+            else:
+                gender = None
+                original_term, translations = str(row[0]), row[1:]
 
             if original_term in words:
                 continue
@@ -151,6 +160,7 @@ class DataManager:
                     word_class=word_class,
                     original=original_term,
                     translations=translations,
+                    gender=gender,
                 )
             )
 
