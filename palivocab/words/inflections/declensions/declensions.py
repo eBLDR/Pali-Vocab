@@ -3,7 +3,6 @@ from palivocab.words.inflections.inflections import Inflections
 
 
 class Declensions(Inflections):
-
     _stem_types = [
         'a', 'ā',
         'i', 'ī', 'in',
@@ -22,9 +21,6 @@ class Declensions(Inflections):
     case_dative = CaseDative()
     case_locative = CaseLocative()
 
-    number_singular = 'singular'
-    number_plural = 'plural'
-
     def __init__(self, noun, gender):
         super().__init__()
 
@@ -33,8 +29,6 @@ class Declensions(Inflections):
 
         self.stem_type = self.determine_stem_type()
         self.nominal_base = self.determine_nominal_base()
-
-        print(self.stem_type, self.nominal_base)
 
         self.nominative_singular = None
         self.vocative_singular = None
@@ -54,6 +48,23 @@ class Declensions(Inflections):
         self.dative_plural = None
         self.locative_plural = None
 
+        self.generate_all()
+
+    def __repr__(self):
+        str_ = f'Noun: {self.noun} ({self.gender})\n\n'
+
+        str_ += f'Nom. sing.:\n'
+        str_ += f'  {", ".join(self.nominative_singular)}\n'
+        str_ += f'Nom. pl.:\n'
+        str_ += f'  {", ".join(self.nominative_plural)}\n'
+
+        str_ += f'Acc. sing.:\n'
+        str_ += f'  {", ".join(self.accusative_singular)}\n'
+        str_ += f'Acc. pl.:\n'
+        str_ += f'  {", ".join(self.accusative_plural)}\n'
+
+        return str_
+
     def determine_stem_type(self):
         for stem_type in self._stem_types:
             if self.noun.endswith(stem_type):
@@ -61,6 +72,11 @@ class Declensions(Inflections):
 
     def determine_nominal_base(self):
         return self.noun[:-len(self.stem_type)]
+
+    def build_declension(self, suffixes):
+        return [
+            self.nominal_base + suffix for suffix in suffixes
+        ]
 
     def generate_all(self):
         self.generate_nominative_singular()
@@ -81,19 +97,23 @@ class Declensions(Inflections):
         self.generate_locative_plural()
 
     def generate_nominative_singular(self):
-        self.nominative_singular = [
-            self.nominal_base + suffix for suffix in self.case_nominative.decline(
+        self.nominative_singular = self.build_declension(
+            self.case_nominative.singular.get_suffixes(
                 stem=self.stem_type,
-                number=self.number_singular,
                 gender=self.gender,
             )
-        ]
+        )
 
     def generate_vocative_singular(self):
         self.vocative_singular = None
 
     def generate_accusative_singular(self):
-        self.accusative_singular = None
+        self.accusative_singular = self.build_declension(
+            self.case_accusative.singular.get_suffixes(
+                stem=self.stem_type,
+                gender=self.gender,
+            )
+        )
 
     def generate_instrumental_singular(self):
         self.instrumental_singular = None
@@ -111,13 +131,23 @@ class Declensions(Inflections):
         self.locative_singular = None
 
     def generate_nominative_plural(self):
-        self.nominative_plural = None
+        self.nominative_plural = self.build_declension(
+            self.case_nominative.plural.get_suffixes(
+                stem=self.stem_type,
+                gender=self.gender,
+            )
+        )
 
     def generate_vocative_plural(self):
         self.vocative_plural = None
 
     def generate_accusative_plural(self):
-        self.accusative_plural = None
+        self.accusative_plural = self.build_declension(
+            self.case_accusative.plural.get_suffixes(
+                stem=self.stem_type,
+                gender=self.gender,
+            )
+        )
 
     def generate_instrumental_plural(self):
         self.instrumental_plural = None

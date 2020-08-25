@@ -6,17 +6,17 @@ class Noun(Word):
     word_class = 'noun'
 
     _genders_type = [
-        ('masculine', 'm.',),
-        ('feminine', 'f.',),
-        ('neuter', 'nt.'),
+        'masculine',
+        'feminine',
+        'neuter',
     ]
 
-    def __init__(self, original, translations):
+    def __init__(self, original, translations, gender=None):
         super().__init__(original, translations)
 
-        self.gender = None
+        self.gender = gender
 
-        self.declensions = Declensions(self.original, self.gender)
-
-    def get_stem(self):
-        pass
+        self.declensions = Declensions(
+            self.original,
+            self.gender,
+        ) if self.gender else None
