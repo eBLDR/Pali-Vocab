@@ -146,7 +146,7 @@ class DataManager:
         words = []
 
         for row in raw_data:
-            if word_class == 'noun':
+            if word_class == 'nouns':
                 original_term, translations, gender = str(row[0]), row[2:], self.gender_mapper.get(row[1])
             else:
                 gender = None

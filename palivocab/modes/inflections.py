@@ -27,7 +27,7 @@ class ModeInflections(ModeBase):
     def ask_term(self):
         utils.clear_screen()
         utils.dash_line()
-        word = self.unasked_words[0]
+        noun = self.unasked_words[0]
 
         # for loop iterating over cases / numbers
             # answer = utils.get_user_input(
@@ -39,7 +39,10 @@ class ModeInflections(ModeBase):
             # )
             #
             # self.assess_answer(answer, word.declensions, word)
-        print(word.declensions)
+
+        print(noun.declensions)
+        utils.press_enter_(text='Next')
+        self.unasked_words.remove(noun)
 
     def show_terms_to_review(self):
         pass

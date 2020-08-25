@@ -11,8 +11,8 @@ class Noun(Word):
         'neuter',
     ]
 
-    def __init__(self, original, translations, gender=None):
-        super().__init__(original, translations)
+    def __init__(self, original, translations, gender=None, **kwargs):
+        super().__init__(original, translations, **kwargs)
 
         self.gender = gender if gender in self._genders_type else None
 

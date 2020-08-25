@@ -1,7 +1,7 @@
 class Word:
     word_class = NotImplemented
 
-    def __init__(self, original, translations):
+    def __init__(self, original, translations, **kwargs):
         self.original = original
         self.translations = translations
 
@@ -11,10 +11,7 @@ class Word:
 
         for subclass in cls.__subclasses__():
             if subclass.is_word_class_for(word_class):
-                if hasattr(subclass, 'gender'):
-                    return subclass(original, translations, gender=gender)
-
-                return subclass(original, translations)
+                return subclass(original, translations, gender=gender)
 
         # raise ValueError(f'Word factory got unknown word class: {word_class}')
         return cls(original, translations)
