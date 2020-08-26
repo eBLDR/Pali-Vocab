@@ -27,23 +27,25 @@ class ModeInflections(ModeBase):
     def ask_term(self):
         utils.clear_screen()
         utils.dash_line()
-
         noun = self.unasked_words[0]
 
-        # for loop iterating over cases / numbers
-            # answer = utils.get_user_input(
-            #     prompt='Trans.',
-            #     info=(
-            #         f'Question {self.current_question} of {self.total_questions}'
-            #         f'\n\n{word.original}'
-            #     )
-            # )
-            #
-            # self.assess_answer(answer, word.declensions, word)
+        print(
+            f'Question {self.current_question} of {self.total_questions}'
+            f'\nNoun: {noun.original}\n'
+        )
 
-        print(noun.declensions)
-        utils.press_enter_(text='Next')
+        for case, singular_forms, plural_forms in noun.declensions.declined_forms:
+            for number, declensions in zip(
+                    ('sing.', 'pl.'),
+                    (singular_forms, plural_forms),
+            ):
+                answer = utils.get_user_input(prompt=f'{case} {number}')
+                self.assess_answer(answer, declensions, noun, remove=False)
+
         self.unasked_words.remove(noun)
+        utils.press_enter_(text='Noun completed. Next')
 
     def show_terms_to_review(self):
-        pass
+        print()
+        for noun in self.words_to_review:
+            print(noun.declensions)

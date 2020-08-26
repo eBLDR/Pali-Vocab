@@ -3,7 +3,7 @@ from palivocab.words.inflections.inflections import Inflections
 
 
 class Declensions(Inflections):
-    _stem_types = [
+    stem_types = [
         'a', 'ā',
         'i', 'ī', 'in',
         'u', 'ū',
@@ -50,32 +50,30 @@ class Declensions(Inflections):
 
         self.generate_all()
 
+    @property
+    def declined_forms(self):
+        return (
+            ('Nom.', self.nominative_singular, self.nominative_plural),
+            ('Acc.', self.accusative_singular, self.accusative_plural),
+            ('Instr.', self.instrumental_singular, self.instrumental_plural),
+            ('Abl.', self.ablative_singular, self.ablative_plural),
+            ('Dat.', self.dative_singular, self.dative_plural),
+            ('Gen.', self.genitive_singular, self.genitive_plural),
+            ('Loc.', self.locative_singular, self.locative_plural),
+            ('Voc.', self.vocative_singular, self.vocative_plural),
+        )
+
     def __repr__(self):
         str_ = f'Noun: {self.noun} ({self.gender})\n'
 
-        cases = ('Nom', 'Acc', 'Instr', 'Abl', 'Dat', 'Gen', 'Loc', 'Voc')
-        declined_forms = (
-            (self.nominative_singular, self.nominative_plural),
-            (self.accusative_singular, self.accusative_plural),
-            (self.instrumental_singular, self.instrumental_plural),
-            (self.ablative_singular, self.ablative_plural),
-            (self.dative_singular, self.dative_plural),
-            (self.genitive_singular, self.genitive_plural),
-            (self.locative_singular, self.locative_plural),
-            (self.vocative_singular, self.vocative_plural),
-        )
-
-        for case, declined_form in zip(cases, declined_forms):
-            singular, plural = declined_form
-            str_ += f'{case}. sing.:\n'
-            str_ += f'  {", ".join(singular)}\n'
-            str_ += f'{case}. pl.:\n'
-            str_ += f'  {", ".join(plural)}\n'
+        for case, singular_forms, plural_forms in self.declined_forms:
+            str_ += f'{case} sing.:\t{", ".join(singular_forms)}\n'
+            str_ += f'{case} pl.:\t{", ".join(plural_forms)}\n'
 
         return str_
 
     def determine_stem_type(self):
-        for stem_type in self._stem_types:
+        for stem_type in self.stem_types:
             if self.noun.endswith(stem_type):
                 return stem_type
 

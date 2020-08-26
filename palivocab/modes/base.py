@@ -20,7 +20,7 @@ class ModeBase:
         self.current_question = 1
         self.unasked_words = []
 
-        self.words_to_review = []
+        self.words_to_review = set()
 
     def run(self):
         self.set_up()
@@ -135,7 +135,7 @@ class ModeBase:
     def ask_term(self):
         raise NotImplementedError
 
-    def assess_answer(self, answer, correct_answers, word):
+    def assess_answer(self, answer, correct_answers, word, remove=True):
         is_answer_valid = self.is_answer_valid(
             answer,
             correct_answers,
@@ -148,10 +148,11 @@ class ModeBase:
         else:
             print(f'\nIncorrect. Possible answers: {correct_answers}\n')
             self.score.increase_incorrect()
-            self.words_to_review.append(word)
+            self.words_to_review.add(word)
             utils.press_enter_(text='Next...')
 
-        self.unasked_words.remove(word)
+        if remove:
+            self.unasked_words.remove(word)
 
     def show_terms_to_review(self):
         raise NotImplementedError
