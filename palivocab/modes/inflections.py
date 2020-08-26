@@ -27,6 +27,7 @@ class ModeInflections(ModeBase):
     def ask_term(self):
         utils.clear_screen()
         utils.dash_line()
+
         noun = self.unasked_words[0]
 
         # for loop iterating over cases / numbers
