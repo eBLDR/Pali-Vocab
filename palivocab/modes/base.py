@@ -13,8 +13,8 @@ class ModeBase:
         self.score = Score()
 
         self.source = None
-        self.word_class = None
-        self.lesson_number = None
+        self.selected_word_classes = None
+        self.selected_lessons = None
 
         self.total_questions = 0
         self.current_question = 1
@@ -23,9 +23,11 @@ class ModeBase:
         self.words_to_review = set()
 
     def run(self):
-        self.set_up()
+        while True:
+            self.set_up()
 
-        utils.press_enter_(text='Ready?')
+            if utils.confirmation():
+                break
 
         while self.unasked_words:
             self.ask_term()
@@ -48,6 +50,8 @@ class ModeBase:
         self.init_source()
         self.init_lesson()
         self.init_word_class()
+        print(self.selected_lessons)
+        print(self.selected_word_classes)
         self.load_data()
         self.init_questions()
 
@@ -65,38 +69,47 @@ class ModeBase:
         )
 
     def init_lesson(self):
-        available_lessons = sorted(self.csv_manager.get_available_lessons(self.source))
+        available_lessons = self.csv_manager.get_available_lessons(self.source)
 
         # TODO: implement multiple lesson selection
         # print(f'Lessons (comma separated): {", ".join(available_lessons)}')
 
-        self.lesson_number = utils.get_user_input(
+        self.selected_lessons = utils.get_user_input(
             prompt='Lesson',
             info=f'Lessons',
-            valid_options=available_lessons,
-            accept_option_all=True,
+            valid_options=sorted(available_lessons),
+            accept_many=True,
         )
 
     def init_word_class(self):
-        available_word_classes = sorted(self.csv_manager.get_available_word_classes(
-            self.source,
-            lesson_number=self.lesson_number,
-        ))
+        available_word_classes = set()
 
-        self.word_class = utils.get_user_input(
+        for lesson_number in self.selected_lessons:
+            available_word_classes.update(
+                self.csv_manager.get_available_word_classes(
+                    self.source,
+                    lesson_number=lesson_number,
+                )
+            )
+
+        self.selected_word_classes = utils.get_user_input(
             prompt='Word class',
             info=f'Word classes',
-            valid_options=available_word_classes,
-            accept_option_all=True,
+            valid_options=sorted(list(available_word_classes)),
             accept_shortcuts=True,
+            accept_many=True,
         )
 
     def load_data(self):
-        self.word_set.add_words(self.csv_manager.generate_words_list(
-            self.source,
-            lesson_number=self.lesson_number,
-            word_class=self.word_class,
-        ))
+        self.word_set.clear()
+
+        self.word_set.add_words(
+            self.csv_manager.generate_words_list(
+                self.source,
+                self.selected_lessons,
+                self.selected_word_classes,
+            )
+        )
 
     def init_questions(self):
         random.shuffle(self.word_set)
@@ -112,8 +125,8 @@ class ModeBase:
         print(
             f'Loaded.\n'
             f'Source: {self.source.title()}\n'
-            f'Lesson: {self.lesson_number}\n'
-            f'Word class: {self.word_class}\n'
+            f'Lesson: {self.selected_lessons}\n'
+            f'Word class: {self.selected_word_classes}\n'
             f'Questions: {self.total_questions}'
         )
 

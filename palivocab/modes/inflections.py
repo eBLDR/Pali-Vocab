@@ -17,10 +17,10 @@ class ModeInflections(ModeBase):
 
     # Overriding parent method - inflection only accepts nouns and verbs
     def init_word_class(self):
-        self.word_class = utils.get_user_input(
+        self.selected_word_classes = utils.get_user_input(
             prompt='Word class',
             info=f'Inflection of',
-            valid_options=['nouns'],
+            valid_options=['nouns'],  # TMP
             accept_shortcuts=True,
         )
 

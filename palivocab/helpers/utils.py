@@ -15,40 +15,44 @@ def press_enter_(text: str):
     input(f'{text} | Press <enter> ')
 
 
+def confirmation():
+    valid = ['y', 'n']
+
+    while True:
+        action = input('Confirm [y, n]: ')
+        if action in valid:
+            return action == 'y'
+
+
 def get_user_input(
         prompt: str, info: str = '', valid_options: list = None,
-        accept_option_all=False, accept_shortcuts=False,
+        accept_shortcuts=False, accept_many=False,
 ):
+    """
+    :return: <list> if accept_many else <str>
+    """
+
     def generate_info_string(
             info_='', shortcut_mapper_=None,
     ):
         if not valid_options:
             return info_
 
+        if shortcut_mapper_:
+            shortcut_characters = len(list(shortcut_mapper_.keys())[-1])
+            valid_options_to_display = [
+                f"[{option_[:shortcut_characters].upper()}]{option_[shortcut_characters:]}"
+                for option_ in valid_options
+            ]
+
+        else:
+            valid_options_to_display = valid_options
+
         if info_:
             info_ += ": "
 
-        exclude_items = []
-
-        if accept_option_all:
-            exclude_items.append(config.ALL_STRING)
-
-        if shortcut_mapper_:
-            exclude_items.extend(list(shortcut_mapper_.keys()))
-
-        valid_options_to_display = [
-            option for option in valid_options if option not in exclude_items
-        ]
-
-        if shortcut_mapper_:
-            shortcut_characters = len(exclude_items[-1])
-            valid_options_to_display = [
-                f"[{option_[:shortcut_characters].upper()}]{option_[shortcut_characters:]}"
-                for option_ in valid_options_to_display
-            ]
-
-        if accept_option_all:
-            info_ += f'[{config.ALL_STRING}] '
+        if accept_many:
+            info_ += f'(comma separated) [{config.ALL_STRING}] '
 
         info_ += ", ".join(sorted(valid_options_to_display))
 
@@ -63,10 +67,6 @@ def get_user_input(
 
         if accept_shortcuts:
             shortcut_mapper = generate_shortcut_mapper(valid_options)
-            valid_options.extend(list(shortcut_mapper.keys()))
-
-        if accept_option_all:
-            valid_options.append(config.ALL_STRING)
 
     if info := generate_info_string(
             info,
@@ -75,14 +75,34 @@ def get_user_input(
         print(info)
 
     while True:
-        user_input = input(f'{prompt}: ').strip(' ').lower()
+        user_input = input(f'{prompt}: ').replace(' ', '').lower()
 
-        if valid_options and user_input not in valid_options:
+        if not valid_options:
+            if user_input:
+                return user_input
+
             continue
 
-        if user_input:
-            # Check shortcuts
-            return shortcut_mapper.get(user_input) or user_input
+        if not accept_many:
+            if user_input in valid_options or user_input in shortcut_mapper:
+                return shortcut_mapper.get(user_input) or user_input
+
+            continue
+
+        if user_input == config.ALL_STRING:
+            return valid_options
+
+        user_inputs = user_input.split(',')
+
+        for user_input in user_inputs:
+            if user_input not in valid_options and user_input not in shortcut_mapper:
+                print(f'Wrong option: {user_input}')
+                break
+
+        else:
+            return [
+                shortcut_mapper.get(user_input) or user_input for user_input in user_inputs
+            ]
 
 
 def get_user_input_integer(prompt: str, max_value: int = None):
