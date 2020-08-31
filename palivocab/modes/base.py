@@ -50,8 +50,6 @@ class ModeBase:
         self.init_source()
         self.init_lesson()
         self.init_word_class()
-        print(self.selected_lessons)
-        print(self.selected_word_classes)
         self.load_data()
         self.init_questions()
 

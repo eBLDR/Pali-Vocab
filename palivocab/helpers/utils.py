@@ -75,7 +75,7 @@ def get_user_input(
         print(info)
 
     while True:
-        user_input = input(f'{prompt}: ').replace(' ', '').lower()
+        user_input = input(f'{prompt}: ').strip(' ').lower()
 
         if not valid_options:
             if user_input:
@@ -92,7 +92,9 @@ def get_user_input(
         if user_input == config.ALL_STRING:
             return valid_options
 
-        user_inputs = user_input.split(',')
+        user_inputs = [
+            user_input_.strip(' ') for user_input_ in user_input.split(',')
+        ]
 
         for user_input in user_inputs:
             if user_input not in valid_options and user_input not in shortcut_mapper:
