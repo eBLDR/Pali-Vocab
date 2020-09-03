@@ -6,12 +6,12 @@ class Word:
         self.translations = translations
 
     @classmethod
-    def factory_from_word_class(cls, word_class, original, translations, gender):
+    def factory_from_word_class(cls, word_class, original, translations, **kwargs):
         word_class = cls.clean_word_class(word_class)
 
         for subclass in cls.__subclasses__():
             if subclass.is_word_class_for(word_class):
-                return subclass(original, translations, gender=gender)
+                return subclass(original, translations, **kwargs)
 
         # raise ValueError(f'Word factory got unknown word class: {word_class}')
         return cls(original, translations)

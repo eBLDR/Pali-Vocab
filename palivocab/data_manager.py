@@ -107,11 +107,7 @@ class DataManager:
         words_list = []
 
         for row in raw_data:
-            if word_class == 'nouns':
-                original_term, translations, gender = str(row[0]), row[2:], self.gender_mapper.get(row[1])
-            else:
-                gender = None
-                original_term, translations = str(row[0]), row[1:]
+            original_term, translations, kwargs = self.extract_row(row, word_class=word_class)
 
             if original_term in words_list:
                 continue
@@ -121,11 +117,21 @@ class DataManager:
                     word_class=word_class,
                     original=original_term,
                     translations=translations,
-                    gender=gender,
+                    **kwargs,
                 )
             )
 
         return words_list
+
+    def extract_row(self, row, word_class=None):
+        kwargs = {}
+
+        if word_class == 'nouns':
+            original_term, translations, kwargs['gender'] = str(row[0]), row[2:], self.gender_mapper.get(row[1])
+        else:
+            original_term, translations = str(row[0]), row[1:]
+
+        return original_term, translations, kwargs
 
     @staticmethod
     def generate_lesson_folder_name(lesson_number: int) -> str:

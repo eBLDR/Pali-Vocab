@@ -99,6 +99,12 @@ class ModeBase:
         )
 
     def load_data(self):
+        if not isinstance(self.selected_lessons, list):
+            self.selected_lessons = [self.selected_lessons]
+
+        if not isinstance(self.selected_word_classes, list):
+            self.selected_word_classes = [self.selected_word_classes]
+
         self.word_set.clear()
 
         self.word_set.add_words(
@@ -123,8 +129,8 @@ class ModeBase:
         print(
             f'Loaded.\n'
             f'Source: {self.source.title()}\n'
-            f'Lesson: {self.selected_lessons}\n'
-            f'Word class: {self.selected_word_classes}\n'
+            f'Lessons: {self.selected_lessons}\n'
+            f'Word classes: {self.selected_word_classes}\n'
             f'Questions: {self.total_questions}'
         )
 
