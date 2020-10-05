@@ -1,16 +1,17 @@
-manussa,m,man,human being,person
-nara,m,man,person
-purisa,m,man,person
+original,gender,translation
+manussa,m,man;human being;person
+nara,m,man;person
+purisa,m,man;person
 kassaka,m,farmer
-brāhmaṇa,m,brahmin,priest
+brāhmaṇa,m,brahmin;priest
 putta,m,son
 mātula,m,uncle
 kumāra,m,boy
 vāṇija,m,merchant
 bhūpāla,m,king
-buddha,m,buddha,enlightened one
-tathāgata,m,buddha,thus-gone
-sugata,m,buddha,well-gone
+buddha,m,buddha;enlightened one
+tathāgata,m,buddha;thus-gone
+sugata,m,buddha;well-gone
 sahāya,m,friend
 sahāyaka,m,friend
 mitta,m,friend

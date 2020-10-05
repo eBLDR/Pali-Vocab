@@ -1,3 +1,4 @@
+original,gender,translation
 phala,nt,fruit
 nayana,nt,eye
 locana,nt,eye
@@ -13,12 +14,12 @@ ghara,nt,house
 paṇṇa,nt,leaf
 tiṇa,nt,grass
 khīra,nt,milk
-nagara,nt,city,town
+nagara,nt,city;town
 uyyāna,nt,park
 khetta,nt,field
 bhaṇḍa,nt,goods
-sīla,nt,virtue,precept
-dāna,nt,alms,charity
-rūpa,nt,object,form,matter
+sīla,nt,virtue;precept
+dāna,nt,alms;charity
+rūpa,nt,object;form;matter
 dvāra,nt,door
 vattha,nt,cloth

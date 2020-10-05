@@ -97,41 +97,35 @@ class DataManager:
     @staticmethod
     def load_csv(filepath):
         with open(filepath, 'r') as csv_file:
-            raw_data = [
-                row for row in csv.reader(csv_file)
+            dict_like_data = [
+                row for row in csv.DictReader(csv_file)
             ]
 
-        return raw_data
+        return dict_like_data
 
-    def prepare_data_set(self, raw_data, word_class=None):
+    def prepare_data_set(self, dict_like_data, word_class=None):
         words_list = []
 
-        for row in raw_data:
-            original_term, translations, kwargs = self.extract_row(row, word_class=word_class)
+        for word_data in dict_like_data:
+            original_term = word_data.pop('original')
+            translations = word_data.pop('translation', []).split(';')
 
             if original_term in words_list:
                 continue
+
+            if 'gender' in word_data:
+                word_data['gender'] = self.gender_mapper.get(word_data['gender'])
 
             words_list.append(
                 Word.factory_from_word_class(
                     word_class=word_class,
                     original=original_term,
                     translations=translations,
-                    **kwargs,
+                    **word_data,
                 )
             )
 
         return words_list
-
-    def extract_row(self, row, word_class=None):
-        kwargs = {}
-
-        if word_class == 'nouns':
-            original_term, translations, kwargs['gender'] = str(row[0]), row[2:], self.gender_mapper.get(row[1])
-        else:
-            original_term, translations = str(row[0]), row[1:]
-
-        return original_term, translations, kwargs
 
     @staticmethod
     def generate_lesson_folder_name(lesson_number: int) -> str:

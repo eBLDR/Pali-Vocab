@@ -1,8 +1,9 @@
+original,gender,translation
 nāvika,m,sailor
 ākāsa,m,sky
-samudda,m,ocean,sea
-deva,m,deity,god
-sura,m,deity,god
+samudda,m,ocean;sea
+deva,m,deity;god
+sura,m,deity;god
 loka,m,world
 āloka,m,light
 sakuṇa,m,bird
@@ -12,4 +13,4 @@ sappurisa,m,virtuous man
 asappurisa,m,wicked man
 kāya,m,body
 dūta,m,messenger
-goṇa,m,ox,bull
+goṇa,m,ox;bull
