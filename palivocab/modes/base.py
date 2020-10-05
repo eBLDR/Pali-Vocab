@@ -69,13 +69,10 @@ class ModeBase:
     def init_lesson(self):
         available_lessons = self.csv_manager.get_available_lessons(self.source)
 
-        # TODO: implement multiple lesson selection
-        # print(f'Lessons (comma separated): {", ".join(available_lessons)}')
-
         self.selected_lessons = utils.get_user_input(
             prompt='Lesson',
             info=f'Lessons',
-            valid_options=sorted(available_lessons),
+            valid_options=available_lessons,
             accept_many=True,
         )
 

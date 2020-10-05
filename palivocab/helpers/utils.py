@@ -54,13 +54,15 @@ def get_user_input(
         if accept_many:
             info_ += f'(comma separated) [{config.ALL_STRING}] '
 
-        info_ += ", ".join(sorted(valid_options_to_display))
+        info_ += ", ".join(valid_options_to_display)
 
         return info_
 
     shortcut_mapper = {}
 
     if valid_options:
+        valid_options = sort_smart(valid_options)
+
         valid_options = [
             valid_option.lower() for valid_option in valid_options
         ]
@@ -141,3 +143,18 @@ def generate_shortcut_mapper(terms):
             shortcut_mapper.clear()
 
     return shortcut_mapper
+
+
+def sort_smart(values: list) -> list:
+    for value in values:
+        if not value.isdigit():
+            return sorted(values)
+
+    # At this point we ensure it's a numeric list
+    digit_number_type_list = [
+        int(number) for number in values
+    ]
+
+    return [
+        str(number) for number in sorted(digit_number_type_list)
+    ]
