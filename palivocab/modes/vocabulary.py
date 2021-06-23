@@ -4,7 +4,7 @@ from palivocab.modes.base import ModeBase
 
 class ModeVocabulary(ModeBase):
     """
-    Vocabulary from Pāli textbooks
+    Vocabulary from Pāḷi textbooks.
     """
 
     def __init__(self):

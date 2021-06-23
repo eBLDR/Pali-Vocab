@@ -35,16 +35,16 @@ class ModeBase:
 
         utils.clear_screen()
         utils.dash_line()
-        utils.press_enter_(text='Finished, see score...')
+        utils.press_enter(text='Finished, see score...')
         self.score.display()
 
         if self.words_to_review:
             utils.dash_line()
-            utils.press_enter_(text='Incorrect answers for reviewing...')
+            utils.press_enter(text='Incorrect answers for reviewing...')
             self.show_terms_to_review()
 
         utils.dash_line()
-        utils.press_enter_(text='Done!')
+        utils.press_enter(text='Done!')
 
     def set_up(self):
         self.init_source()
@@ -163,7 +163,7 @@ class ModeBase:
             print(f'\nIncorrect. Possible answers: {correct_answers}\n')
             self.score.increase_incorrect()
             self.words_to_review.add(word)
-            utils.press_enter_(text='Next...')
+            utils.press_enter(text='Next...')
 
         if remove:
             self.unasked_words.remove(word)

@@ -1,6 +1,6 @@
 import os
 
-PROJECT_NAME = 'Pali Vocabulari'
+PROJECT_NAME = 'Pāḷi Vocabulari'
 SRC_PATH = os.path.join(os.getcwd(), 'data')
 LESSON_FOLDER_NAME = 'lesson{two_digit_number}'
 

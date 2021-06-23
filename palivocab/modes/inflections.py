@@ -5,7 +5,7 @@ from palivocab.modes.base import ModeBase
 
 class ModeInflections(ModeBase):
     """
-    Inflections of Pāli terms
+    Inflections of Pāḷi terms.
     """
 
     def __init__(self):
@@ -45,7 +45,7 @@ class ModeInflections(ModeBase):
                 self.assess_answer(answer, declensions, noun, remove=False)
 
         self.unasked_words.remove(noun)
-        utils.press_enter_(text='Noun completed. Next')
+        utils.press_enter(text='Noun completed. Next')
 
     def show_terms_to_review(self):
         print()

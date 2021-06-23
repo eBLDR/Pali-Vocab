@@ -11,7 +11,7 @@ def dash_line(length: int = 15):
     print('= ' * length)
 
 
-def press_enter_(text: str):
+def press_enter(text: str):
     input(f'{text} | Press <enter> ')
 
 
@@ -19,7 +19,7 @@ def confirmation():
     valid = ['y', 'n']
 
     while True:
-        action = input('Confirm [y, n]: ')
+        action = input('Confirm [y/n]: ').lower()
         if action in valid:
             return action == 'y'
 
